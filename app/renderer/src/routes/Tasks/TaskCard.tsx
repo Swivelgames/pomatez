@@ -1,6 +1,5 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import autoSize from "autosize";
 import {
 	StyledCard,
 	StyledCardText,
@@ -38,25 +37,13 @@ const TaskCard: React.FC<Props> = ({
 
 	const [editing, setEditing] = useTargetOutside({ ref: areaRef });
 
-	useEffect(() => {
-		if (editing) {
-			if (areaRef.current) {
-				areaRef.current.focus();
-				areaRef.current.value = text;
-
-				autoSize(areaRef.current);
-
-				areaRef.current.onkeypress = (e: KeyboardEvent) => {
-					if (e.key !== "Enter" || !areaRef.current) return;
-					e.preventDefault();
-					if (onSaveCardText && areaRef.current.value) {
-						onSaveCardText(areaRef.current.value);
-					}
-					setEditing(false);
-				};
-			}
+	const onSaveCardTextAction = (textArea: HTMLTextAreaElement) => {
+		if (onSaveCardText) {
+			onSaveCardText(textArea.value);
 		}
-	}, [editing, text, onSaveCardText, setEditing]);
+		setEditing(false);
+		return true;
+	};
 
 	const onEditCardAction = (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -79,21 +66,20 @@ const TaskCard: React.FC<Props> = ({
 	) => {
 		e.stopPropagation();
 
-		if (areaRef.current) {
-			if (onSaveCardText && areaRef.current.value) {
-				onSaveCardText(areaRef.current.value);
-			}
-			setEditing(false);
+		if (!areaRef?.current) return;
+
+		if (onSaveCardText && areaRef.current.value) {
+			onSaveCardText(areaRef.current.value);
 		}
+		setEditing(false);
 	};
 
 	const renderCardText = () =>
 		editing ? (
 			<StyledCardTextArea
 				ref={areaRef}
-				onClick={(e) => {
-					e.stopPropagation();
-				}}
+				onComplete={onSaveCardTextAction}
+				initialValue={text}
 			/>
 		) : (
 			<StyledCardText done={done}>{text}</StyledCardText>

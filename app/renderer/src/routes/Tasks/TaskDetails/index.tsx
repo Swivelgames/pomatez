@@ -68,15 +68,6 @@ const TaskDetails = React.forwardRef<HTMLDivElement, Props>(
 		}, [openExternalCallback, editingDescription, showPreview]);
 
 		useEffect(() => {
-			if (cardTextAreaRef.current) {
-				if (card?.text) {
-					cardTextAreaRef.current.value = card?.text;
-					autoSize(cardTextAreaRef.current);
-				}
-			}
-		}, [card]);
-
-		useEffect(() => {
 			if (editingDescription) {
 				if (descriptionAreaRef.current) {
 					descriptionAreaRef.current.focus();
@@ -84,6 +75,14 @@ const TaskDetails = React.forwardRef<HTMLDivElement, Props>(
 				}
 			}
 		}, [editingDescription, showPreview]);
+
+		const onSaveCardTextAction = (ref: HTMLTextAreaElement) => {
+			if (!ref.value) return false;
+
+			dispatch(editTaskCardText(listId, cardId, ref.value));
+			ref.blur();
+			return true;
+		};
 
 		const onEditCardText = useCallback(() => {
 			if (cardTextAreaRef.current && cardTextAreaRef.current.value) {
@@ -126,6 +125,12 @@ const TaskDetails = React.forwardRef<HTMLDivElement, Props>(
 			[dispatch, listId, card]
 		);
 
+		const onDescriptionCompleteAction = useCallback(() => {
+			dispatch(editTaskCard(listId, cardId, description));
+			setEditingDescription(false);
+			return true;
+		}, [dispatch, cardId, description, listId]);
+
 		const editDescriptionCallback = useCallback(
 			() => setEditingDescription(true),
 			[]
@@ -156,7 +161,13 @@ const TaskDetails = React.forwardRef<HTMLDivElement, Props>(
 
 		return (
 			<StyledDetailContainer ref={ref}>
-				<StyledDetailHeader ref={cardTextAreaRef} onBlur={onEditCardText} />
+				<StyledDetailHeader
+					ref={cardTextAreaRef}
+					autoFocus={false}
+					onBlur={onEditCardText}
+					onComplete={onSaveCardTextAction}
+					initialValue={card?.text}
+				/>
 
 				<StyledDetailCloseButton onClick={onExit}>
 					<SVG name="close" />
@@ -184,8 +195,9 @@ const TaskDetails = React.forwardRef<HTMLDivElement, Props>(
 								<>
 									<StyledDescriptionArea
 										placeholder="Add a more detailed description..."
-										value={description}
+										initialValue={description}
 										onChange={setDescriptionCallback}
+										onComplete={onDescriptionCompleteAction}
 										ref={descriptionAreaRef}
 									/>
 									<StyledButtonPrimary type="submit">Save</StyledButtonPrimary>

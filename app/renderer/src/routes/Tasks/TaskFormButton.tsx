@@ -45,35 +45,28 @@ const TaskFormButton: React.FC<Props> = ({ forList, onSubmit }) => {
 	);
 
 	useEffect(() => {
-		if (isOpen) {
-			if (!forList && formRef.current) {
-				formRef?.current?.scrollIntoView({ block: "center" });
-			}
-			if (forList) {
-				if (inputRef.current) {
-					inputRef.current.focus();
+		if (!isOpen) return;
 
-					inputRef.current.onkeypress = (e: KeyboardEvent) => {
-						if (e.keyCode === 10 && inputRef.current) {
-							e.preventDefault();
-							doSubmit(inputRef.current);
-						}
-					};
-				}
-			} else {
-				if (areaRef.current) {
-					areaRef.current.focus();
-					autoSize(areaRef.current);
+		if (!forList && formRef.current) {
+			formRef?.current?.scrollIntoView({ block: "center" });
+		}
 
-					areaRef.current.onkeypress = (e: KeyboardEvent) => {
-						if (e.ctrlKey && e.key === "Enter" && areaRef.current) {
-							e.preventDefault();
-							if (doSubmit(areaRef.current) && areaRef?.current?.style?.height)
-								areaRef.current.style.height = "inherit";
-						}
-					};
+		if (forList) {
+			if (!inputRef?.current) return;
+
+			inputRef.current.focus();
+
+			inputRef.current.onkeypress = (e: KeyboardEvent) => {
+				if (e.key === "Enter" && inputRef.current) {
+					e.preventDefault();
+					doSubmit(inputRef.current);
 				}
-			}
+			};
+		} else {
+			if (!areaRef?.current) return;
+
+			areaRef.current.focus();
+			autoSize(areaRef.current);
 		}
 	}, [isOpen, forList, doSubmit]);
 
@@ -122,6 +115,7 @@ const TaskFormButton: React.FC<Props> = ({ forList, onSubmit }) => {
 			<StyledTaskTextArea
 				placeholder="Enter a title for this card..."
 				ref={areaRef}
+				onComplete={doSubmit}
 			/>
 		);
 

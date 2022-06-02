@@ -1,7 +1,8 @@
 import styled from "styled-components/macro";
+import { Textarea } from "components";
 import { StyledScrollbar } from "styles/mixins";
 
-export const StyledTextArea = styled.textarea`
+export const StyledTextArea = styled(Textarea)`
 	width: 100%;
 	padding: 0.5rem 1rem;
 

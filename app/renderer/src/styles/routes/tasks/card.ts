@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components/macro";
+import { Textarea } from "components";
 import { StyledButton, StyledButtonPrimary } from "styles";
 
 export const StyledCardText = styled.p<{ done?: boolean }>`
@@ -16,7 +17,7 @@ export const StyledCardText = styled.p<{ done?: boolean }>`
 		`}
 `;
 
-export const StyledCardTextArea = styled.textarea`
+export const StyledCardTextArea = styled(Textarea)`
 	resize: none;
 	border: none;
 	background-color: transparent;

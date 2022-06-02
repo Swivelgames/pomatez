@@ -1,4 +1,5 @@
 import styled from "styled-components/macro";
+import { Textarea } from "components";
 import { themes, StyledTextArea, StyledButtonDanger } from "styles";
 import { StyledScrollbar } from "styles/mixins";
 
@@ -40,7 +41,7 @@ export const StyledDetailContainer = styled.div`
 	}
 `;
 
-export const StyledDetailHeader = styled.textarea`
+export const StyledDetailHeader = styled(Textarea)`
 	width: calc(100% - 3.2rem);
 	height: 2.3rem;
 

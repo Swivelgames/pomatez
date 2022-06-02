@@ -35,32 +35,33 @@ const TaskHeader: React.FC<Props> = ({
 	const [showOptions, setShowOptions] = useTargetOutside({ ref: optionRef });
 
 	useEffect(() => {
-		if (editing) {
-			if (inputRef.current) {
-				inputRef.current.focus();
-				inputRef.current.value = title;
+		if (!editing) return;
+		if (!inputRef?.current) return;
 
-				inputRef.current.onblur = () => {
-					if (inputRef.current) {
-						if (onEditTitle && inputRef.current.value) {
-							onEditTitle(inputRef.current.value);
-						}
-						setEditing(false);
-					}
-				};
+		inputRef.current.focus();
+		inputRef.current.value = title;
 
-				inputRef.current.onkeyup = (e: KeyboardEvent) => {
-					if (e.key === "Enter" || e.keyCode === 10) {
-						if (inputRef.current) {
-							if (onEditTitle && inputRef.current.value) {
-								onEditTitle(inputRef.current.value);
-							}
-							setEditing(false);
-						}
-					}
-				};
+		inputRef.current.onblur = () => {
+			if (!inputRef?.current) return;
+
+			if (onEditTitle && inputRef.current.value) {
+				onEditTitle(inputRef.current.value);
 			}
-		}
+
+			setEditing(false);
+		};
+
+		inputRef.current.onkeyup = (e: KeyboardEvent) => {
+			if (e.key === "Enter" || e.keyCode === 10) {
+				if (!inputRef?.current) return;
+
+				if (onEditTitle && inputRef.current.value) {
+					onEditTitle(inputRef.current.value);
+				}
+
+				setEditing(false);
+			}
+		};
 	}, [editing, title, setEditing, onEditTitle]);
 
 	const onEditTitleAction = () => setEditing(true);

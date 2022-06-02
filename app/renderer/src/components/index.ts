@@ -20,6 +20,8 @@ export { default as Dimmer } from "./Dimmer";
 export { default as Checkbox } from "./Checkbox";
 export { default as Radio } from "./Radio";
 
+export { default as Textarea } from "./Textarea";
+
 export { default as Collapse } from "./Collapse";
 
 export { default as Alert } from "./Alert";
